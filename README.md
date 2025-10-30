@@ -8,7 +8,7 @@
 
 ## 主要特性
 
-- **🆕 现代架构**: 支持 ConvNeXt (2022), Swin Transformer (2021), EfficientNetV2, Vision Mamba (2024)
+- **现代架构**: 支持 ConvNeXt (2022), Swin Transformer (2021), EfficientNetV2, Vision Mamba (2024)
 - **真实可用**: 完整实现，开箱即用，支持训练、评估和预测
 - **多尺度架构**: 多种 Backbone + FPN 金字塔特征提取
 - **先进注意力**: CBAM / 多头自注意力 / 跨尺度注意力
@@ -21,7 +21,7 @@
 
 ## 架构设计
 
-### 🆕 现代架构（推荐）
+### 现代架构（推荐）
 
 ```
 输入图像 (3×224×224)
@@ -97,20 +97,6 @@ pip install -r requirements.txt
 
 # 验证安装
 python test_installation.py
-
-# 🆕 测试现代架构
-python test_modern_models.py
-```
-
-### 🆕 现代架构依赖
-
-使用现代架构需要额外安装：
-
-```bash
-pip install timm einops
-
-# 可选: Vision Mamba (实验性)
-pip install mamba-ssm
 ```
 
 ## 快速开始
@@ -236,7 +222,7 @@ python predict.py \
 
 ### 模型配置
 
-#### 🆕 现代架构（推荐）
+#### 现代架构（推荐）
 
 ```python
 MODEL = {
