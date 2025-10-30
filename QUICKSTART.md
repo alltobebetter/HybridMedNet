@@ -2,7 +2,7 @@
 
 本指南将帮助您在5分钟内快速开始使用HybridMedNet进行医学影像诊断。
 
-## 📋 环境准备
+## 环境准备
 
 ### 1. 安装依赖
 
@@ -22,7 +22,7 @@ python -c "import torch; print(f'PyTorch {torch.__version__} installed')"
 python -c "import torchvision; print(f'torchvision {torchvision.__version__} installed')"
 ```
 
-## 🚀 快速训练
+## 快速训练
 
 ### 使用示例数据集
 
@@ -83,7 +83,7 @@ data/
     └── ...
 ```
 
-## 📊 评估模型
+## 评估模型
 
 ```bash
 python evaluate.py --model_path checkpoints/best_model.pth --save_results
@@ -94,7 +94,7 @@ python evaluate.py --model_path checkpoints/best_model.pth --save_results
 - 每个类别的AUC分数
 - ROC曲线图
 
-## 🔮 预测新图像
+## 预测新图像
 
 ### 单张图像预测
 
@@ -116,7 +116,7 @@ python predict.py \
     --save_dir ./predictions
 ```
 
-## ⚙️ 配置说明
+## 配置说明
 
 主要配置位于 `configs/default_config.py`:
 
@@ -139,7 +139,7 @@ TRAIN = {
 }
 ```
 
-## 📈 训练监控
+## 训练监控
 
 ### TensorBoard
 
@@ -156,7 +156,7 @@ tensorboard --logdir=./logs
 - `logs/roc_curves.png` - ROC曲线
 - `checkpoints/best_model.pth` - 最佳模型
 
-## 🎯 使用真实医学数据集
+## 使用真实医学数据集
 
 ### NIH ChestX-ray14 数据集
 
@@ -188,7 +188,7 @@ DATA = {
 # 下载: https://github.com/UCSD-AI4H/COVID-CT
 ```
 
-## 🔧 常见问题
+## 常见问题
 
 ### 1. CUDA内存不足
 
@@ -211,13 +211,13 @@ TRAIN = {
 - 调整学习率
 - 检查数据标签是否正确
 
-## 📚 更多信息
+## 更多信息
 
 - 完整文档：`README.md`
 - 技术细节：`details.md`
 - API文档：查看各模块的docstring
 
-## 🎓 下一步
+## 下一步
 
 1. 尝试不同的backbone网络
 2. 调整数据增强策略
@@ -225,4 +225,4 @@ TRAIN = {
 4. 集成CAM热力图可视化
 5. 部署为Web API服务
 
-祝您使用愉快！🚀
+祝您使用愉快！

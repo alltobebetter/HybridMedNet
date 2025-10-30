@@ -211,7 +211,7 @@ def main():
     print("所有示例运行完成！")
     print("="*80)
     print("\n接下来可以:")
-    print("  1. 查看完整文档: README_NEW.md")
+    print("  1. 查看完整文档: README.md")
     print("  2. 快速开始: QUICKSTART.md")
     print("  3. 运行训练: python train.py")
     print()
