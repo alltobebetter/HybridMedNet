@@ -8,25 +8,32 @@
 
 ## 主要特性
 
+- **🆕 现代架构**: 支持 ConvNeXt (2022), Swin Transformer (2021), EfficientNetV2, Vision Mamba (2024)
 - **真实可用**: 完整实现，开箱即用，支持训练、评估和预测
-- **多尺度架构**: ResNet + FPN金字塔特征提取
-- **注意力机制**: CBAM通道和空间注意力增强
+- **多尺度架构**: 多种 Backbone + FPN 金字塔特征提取
+- **先进注意力**: CBAM / 多头自注意力 / 跨尺度注意力
 - **动态融合**: 自适应多尺度特征融合
 - **多标签分类**: 支持医学影像的多疾病诊断
 - **完整工具链**: 训练、评估、预测、可视化一应俱全
 - **丰富可视化**: ROC曲线、训练曲线、预测可视化
 - **高性能**: 支持GPU加速、混合精度训练
+- **灵活配置**: 轻松切换不同架构，向后兼容
 
 ## 架构设计
+
+### 🆕 现代架构（推荐）
 
 ```
 输入图像 (3×224×224)
     ↓
-[多尺度特征提取]
-ResNet50 Backbone + FPN
+[现代 Backbone]
+ConvNeXt / Swin Transformer / EfficientNetV2
     ↓
-[注意力增强]
-CBAM (通道 + 空间注意力)
+[多尺度特征提取]
+层次化特征金字塔
+    ↓
+[现代注意力机制]
+多头自注意力 + 跨尺度注意力
     ↓
 [动态特征融合]
 自适应权重融合
@@ -37,8 +44,33 @@ CBAM (通道 + 空间注意力)
 输出: 14维概率向量
 ```
 
+### 经典架构（向后兼容）
+
+```
+输入图像 (3×224×224)
+    ↓
+[ResNet Backbone]
+ResNet34/50/101 + FPN
+    ↓
+[CBAM 注意力]
+通道 + 空间注意力
+    ↓
+[特征融合]
+自适应融合
+    ↓
+[分类器]
+多标签预测
+```
+
 ### 核心组件
 
+#### 现代架构
+1. **ModernFeatureExtractor**: ConvNeXt/Swin/EfficientNet 特征提取
+2. **ModernMultiScaleAttention**: 多头自注意力 + 跨尺度注意力
+3. **DynamicFeatureFusion**: 动态特征融合
+4. **MultiLabelClassifier**: 多标签分类器
+
+#### 经典架构
 1. **PyramidFeatureExtractor**: 基于ResNet的多尺度特征提取
 2. **FeaturePyramidNetwork (FPN)**: 特征金字塔网络
 3. **MultiScaleAttention**: 多尺度CBAM注意力
@@ -65,6 +97,20 @@ pip install -r requirements.txt
 
 # 验证安装
 python test_installation.py
+
+# 🆕 测试现代架构
+python test_modern_models.py
+```
+
+### 🆕 现代架构依赖
+
+使用现代架构需要额外安装：
+
+```bash
+pip install timm einops
+
+# 可选: Vision Mamba (实验性)
+pip install mamba-ssm
 ```
 
 ## 快速开始
@@ -190,15 +236,38 @@ python predict.py \
 
 ### 模型配置
 
+#### 🆕 现代架构（推荐）
+
 ```python
 MODEL = {
-    'backbone': 'resnet50',      # resnet34, resnet50, resnet101
-    'pretrained': True,          # 使用ImageNet预训练
-    'num_classes': 14,           # 疾病类别数
-    'fpn_channels': 256,         # FPN通道数
-    'fusion_channels': 512,      # 融合后通道数
-    'dropout': 0.5,              # Dropout率
-    'hierarchical': False,       # 是否层次化分类
+    # 现代 Backbone
+    'backbone': 'convnext_base',  # convnext_tiny/small/base/large
+                                   # swin_tiny/small/base
+                                   # efficientnetv2_s/m/l
+    
+    'pretrained': True,            # 使用ImageNet预训练
+    'num_classes': 14,             # 疾病类别数
+    'fusion_channels': 512,        # 融合后通道数
+    'dropout': 0.5,                # Dropout率
+    
+    # 现代注意力配置
+    'use_modern_attention': True,  # 使用现代注意力机制
+    'use_cross_scale_attention': True,  # 跨尺度注意力
+    'num_heads': 8,                # 注意力头数
+}
+```
+
+#### 经典架构
+
+```python
+MODEL = {
+    'backbone': 'resnet50',        # resnet34, resnet50, resnet101
+    'pretrained': True,
+    'num_classes': 14,
+    'fpn_channels': 256,           # FPN通道数
+    'fusion_channels': 512,
+    'dropout': 0.5,
+    'hierarchical': False,         # 是否层次化分类
 }
 ```
 

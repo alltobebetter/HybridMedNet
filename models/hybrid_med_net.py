@@ -5,35 +5,76 @@ from .attention import MultiScaleAttention
 from .fusion import DynamicFeatureFusion
 from .classifier import HierarchicalClassifier, MultiLabelClassifier
 
+# 导入现代化模块
+try:
+    from .modern_backbones import ModernFeatureExtractor
+    from .modern_attention import ModernMultiScaleAttention
+    MODERN_AVAILABLE = True
+except ImportError:
+    MODERN_AVAILABLE = False
+    print("Warning: Modern modules not available, using classic architecture only")
+
 
 class HybridMedNet(nn.Module):
     """
     HybridMedNet主模型 - 医学影像诊断深度网络
     
     架构：
-    1. 多尺度特征提取（Backbone + FPN）
-    2. 多尺度注意力机制（CBAM）
+    1. 多尺度特征提取（支持经典和现代 Backbone）
+    2. 多尺度注意力机制（CBAM / Modern Attention）
     3. 自适应特征融合
     4. 层次化分类器
+    
+    支持的 Backbone:
+    - 经典: resnet34, resnet50, resnet101
+    - 现代: convnext_tiny/small/base, swin_tiny/small/base, efficientnetv2_s/m/l
     """
     def __init__(self, config):
         super().__init__()
         self.config = config
+        backbone_name = config.MODEL['backbone']
         
-        # 多尺度特征提取器（Backbone + FPN）
-        self.feature_extractor = MultiScaleFeatureExtractor(
-            backbone=config.MODEL['backbone'],
-            pretrained=config.MODEL['pretrained'],
-            fpn_out_channels=config.MODEL.get('fpn_channels', 256)
-        )
+        # 判断使用经典还是现代架构
+        modern_backbones = [
+            'convnext', 'swin', 'efficientnet', 'vim'
+        ]
+        self.use_modern = any(name in backbone_name for name in modern_backbones)
+        
+        if self.use_modern and not MODERN_AVAILABLE:
+            raise ImportError(
+                "Modern backbones requested but dependencies not installed. "
+                "Please install: pip install timm einops"
+            )
+        
+        # 特征提取器
+        if self.use_modern:
+            self.feature_extractor = ModernFeatureExtractor(
+                backbone=backbone_name,
+                pretrained=config.MODEL['pretrained']
+            )
+        else:
+            # 经典架构
+            from .feature_extraction import FeaturePyramidNetwork
+            self.feature_extractor = MultiScaleFeatureExtractor(
+                backbone=backbone_name,
+                pretrained=config.MODEL['pretrained'],
+                fpn_out_channels=config.MODEL.get('fpn_channels', 256)
+            )
         
         # 获取特征维度
         feature_dims = self.feature_extractor.get_feature_dims()
         
         # 多尺度注意力
-        self.attention = MultiScaleAttention(
-            in_channels=feature_dims
-        )
+        if self.use_modern and config.MODEL.get('use_modern_attention', True):
+            self.attention = ModernMultiScaleAttention(
+                channels_list=feature_dims,
+                num_heads=config.MODEL.get('num_heads', 8),
+                use_cross_scale=config.MODEL.get('use_cross_scale_attention', True)
+            )
+        else:
+            self.attention = MultiScaleAttention(
+                in_channels=feature_dims
+            )
         
         # 动态特征融合
         self.fusion = DynamicFeatureFusion(

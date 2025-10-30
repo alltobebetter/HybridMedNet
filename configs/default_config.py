@@ -5,12 +5,24 @@ class Config:
         'input_size': (224, 224),
         'num_classes': 14,
         'num_coarse_classes': 3,
-        'backbone': 'resnet50',
+        
+        # Backbone 选择
+        # 经典: 'resnet34', 'resnet50', 'resnet101'
+        # 现代: 'convnext_tiny', 'convnext_small', 'convnext_base',
+        #       'swin_tiny', 'swin_small', 'swin_base',
+        #       'efficientnetv2_s', 'efficientnetv2_m'
+        'backbone': 'convnext_base',  # 默认使用现代架构
+        
         'pretrained': True,
         'fpn_channels': 256,
         'fusion_channels': 512,
         'dropout': 0.5,
         'hierarchical': False,
+        
+        # 现代架构专用配置
+        'use_modern_attention': True,  # 使用现代注意力机制
+        'use_cross_scale_attention': True,  # 使用跨尺度注意力
+        'num_heads': 8,  # 注意力头数
     }
     
     # 训练配置
