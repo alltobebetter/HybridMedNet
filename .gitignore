@@ -36,10 +36,12 @@ env/
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb
+!HybridMedNet_Colab.ipynb
 
-# Data
-data/
-!data/.gitkeep
+# Data files (not code!)
+data/*/
+!data/*.py
+!data/__init__.py
 *.csv
 *.npy
 *.h5
