@@ -1,5 +1,7 @@
 # HybridMedNet - 医学影像深度学习诊断框架
 
+中文 | [English](README_en.md)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
@@ -8,7 +10,7 @@
 
 ## 主要特性
 
-- **现代架构**: 支持 ConvNeXt (2022), Swin Transformer (2021), EfficientNetV2, Vision Mamba (2024)
+- **现代架构**: 支持 ConvNeXt (2022), Swin Transformer (2021), EfficientNetV2, Vision Mamba (2025)
 - **真实可用**: 完整实现，开箱即用，支持训练、评估和预测
 - **多尺度架构**: 多种 Backbone + FPN 金字塔特征提取
 - **先进注意力**: CBAM / 多头自注意力 / 跨尺度注意力
@@ -99,7 +101,19 @@ pip install -r requirements.txt
 python test_installation.py
 ```
 
-## 快速开始
+
+## Google Colab 快速开始
+
+最快的方式是使用 Google Colab：
+
+1. 点击上方的 "Open in Colab" 按钮
+2. 依次运行所有 cell
+3. 自动下载数据集并开始训练
+4. 约 10-15 分钟完成训练和评估
+
+**性能**：在 Colab 免费 GPU (T4) 上可达到 91%+ 准确率。
+
+## 本地快速开始
 
 ### 1. 使用示例数据训练
 
@@ -212,12 +226,8 @@ python predict.py \
 
 **下载**: [NIH Clinical Center](https://nihcc.app.box.com/v/ChestXray-NIHCC)
 
-### 其他支持的数据集
 
-- **ISIC**: 皮肤病变分类
-- **COVID-19 CT**: 新冠肺炎CT诊断
-- **RSNA Pneumonia**: 肺炎检测
-
+## 
 ## 配置说明
 
 ### 模型配置
@@ -282,7 +292,8 @@ TRAIN = {
 | Pneumonia | 0.76 | 0.72 | 0.70 | 0.71 |
 | **Mean** | **0.84** | **0.81** | **0.78** | **0.79** |
 
-*注：实际性能取决于数据质量和训练配置*
+
+**注**：以上为参考指标，实际性能取决于数据集质量、训练配置和硬件环境。
 
 ## 项目结构
 
@@ -315,93 +326,8 @@ HybridMedNet/
 └── README.md                   # 本文件
 ```
 
-## 高级功能
 
-### 1. 层次化分类
 
-设置 `hierarchical: True` 启用两级分类：
-
-```python
-MODEL = {
-    'hierarchical': True,
-    'num_coarse_classes': 3,  # 粗粒度类别（如：正常/异常/严重）
-    'num_fine_classes': 14,   # 细粒度类别（具体疾病）
-}
-```
-
-### 2. 测试时增强 (TTA)
-
-```python
-from data.transforms import get_test_time_augmentation_transforms
-
-tta_transforms = get_test_time_augmentation_transforms(n_transforms=5)
-# 对同一图像应用多个变换，取平均预测
-```
-
-### 3. 类别权重
-
-处理数据不平衡：
-
-```python
-from utils.metrics import compute_class_weights
-
-class_weights = compute_class_weights(train_labels, num_classes=14)
-criterion = nn.BCEWithLogitsLoss(pos_weight=class_weights)
-```
-
-### 4. CAM可视化
-
-```python
-from utils.visualization import visualize_attention
-
-attention_maps = model.get_attention_maps(image)
-visualization = visualize_attention(image, attention_maps[0])
-```
-
-## 故障排除
-
-### CUDA内存不足
-
-```python
-# 减小batch size
-TRAIN = {'batch_size': 16}  # 或更小
-
-# 使用梯度累积
-TRAIN = {
-    'batch_size': 16,
-    'gradient_accumulation_steps': 2  # 等效于batch_size=32
-}
-```
-
-### 收敛缓慢
-
-```python
-# 调整学习率
-TRAIN = {'learning_rate': 3e-4}  # 增大学习率
-
-# 使用warmup
-TRAIN = {'warmup_epochs': 5}
-```
-
-### 过拟合
-
-```python
-# 增加dropout
-MODEL = {'dropout': 0.6}
-
-# 增强数据增强
-DATA = {'use_albumentations': True}
-```
-
-## 贡献指南
-
-欢迎贡献！请遵循以下步骤：
-
-1. Fork本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启Pull Request
 
 ## 许可证
 
@@ -425,19 +351,14 @@ DATA = {'use_albumentations': True}
 如果您在研究中使用了HybridMedNet，请引用：
 
 ```bibtex
-@software{hybridmednet2024,
+@software{hybridmednet2025,
   title={HybridMedNet: A Multi-scale Medical Image Diagnosis Framework},
   author={Su, Lin},
-  year={2024},
+  year={2025},
   url={https://github.com/alltobebetter/HybridMedNet}
 }
 ```
 
-## 路线图
+## 版本
 
-- [ ] 支持更多backbone（EfficientNet, Vision Transformer）
-- [ ] 3D医学影像支持（CT, MRI）
-- [ ] 模型压缩和量化
-- [ ] Web部署接口
-- [ ] 移动端支持
-- [ ] 联邦学习
+当前版本: v1.5.0 (2025-10-31)

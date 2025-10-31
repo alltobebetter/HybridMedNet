@@ -36,7 +36,7 @@ env/
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb
-!HybridMedNet_Colab.ipynb
+!HybridMedNet.ipynb
 
 # Data files (not code!)
 data/*/
@@ -67,3 +67,31 @@ Thumbs.db
 # Training outputs
 outputs/
 results/
+predictions/
+visualizations/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+.cache/
+
+# Kaggle
+kaggle.json
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Environment variables
+.env
+.env.local
